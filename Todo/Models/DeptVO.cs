@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Todo.Models;
 
-public partial class DeptTb
+public partial class DeptVO
 {
     public int Deptno { get; set; }
 
@@ -11,6 +11,6 @@ public partial class DeptTb
 
     public string? Loc { get; set; }
 
-    public virtual ICollection<EmpTb> EmpTbs { get; } = new List<EmpTb>();
+    public virtual ICollection<EmpVO> EmpVOs { get; } = new List<EmpVO>();
 
 }

@@ -16,9 +16,9 @@ public partial class MyDbContext : DbContext
     {
     }
 
-    public virtual DbSet<DeptTb> DeptTbs { get; set; }
+    public virtual DbSet<DeptVO> DeptVOs { get; set; }
 
-    public virtual DbSet<EmpTb> EmpTbs { get; set; }
+    public virtual DbSet<EmpVO> EmpVOs { get; set; }
 
 //     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 // #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https: //go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -29,7 +29,7 @@ public partial class MyDbContext : DbContext
     {
         modelBuilder.UseCollation("Chinese_PRC_CI_AS");
 
-        modelBuilder.Entity<DeptTb>(entity =>
+        modelBuilder.Entity<DeptVO>(entity =>
         {
             entity.HasKey(e => e.Deptno).HasName("PK__DEPT_TB__E0EB08D74D57FDB1");
 
@@ -46,7 +46,7 @@ public partial class MyDbContext : DbContext
                 .HasColumnName("LOC");
         });
 
-        modelBuilder.Entity<EmpTb>(entity =>
+        modelBuilder.Entity<EmpVO>(entity =>
         {
             entity.HasKey(e => e.Empno).HasName("PK__EMP_TB__14CCF2EEC1853756");
 
@@ -66,7 +66,7 @@ public partial class MyDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("job");
 
-            entity.HasOne(d => d.DeptnoNavigation).WithMany(p => p.EmpTbs)
+            entity.HasOne(d => d.DeptnoNavigation).WithMany(p => p.EmpVOs)
                 .HasForeignKey(d => d.Deptno)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__EMP_TB__DEPTNO__398D8EEE");

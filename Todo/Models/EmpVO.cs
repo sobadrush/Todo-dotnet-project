@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Todo.Models;
 
-public partial class EmpTb
+public partial class EmpVO
 {
     public int Empno { get; set; }
 
@@ -15,5 +15,5 @@ public partial class EmpTb
 
     public int Deptno { get; set; }
 
-    public virtual DeptTb DeptnoNavigation { get; set; } = null!;
+    public virtual DeptVO DeptnoNavigation { get; set; } = null!;
 }
