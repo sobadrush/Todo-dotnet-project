@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 
 namespace Todo.Models;
 
@@ -15,5 +14,6 @@ public partial class EmpVO
 
     public int Deptno { get; set; }
 
+    [JsonIgnore]
     public virtual DeptVO DeptnoNavigation { get; set; } = null!;
 }

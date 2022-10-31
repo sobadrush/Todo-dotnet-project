@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using Todo.Context;
 using Todo.Models;
 
@@ -12,16 +14,29 @@ public class DeptController : ControllerBase
     // DI
     private readonly MyDbContext _myDbContext;
 
-    // DI
+    // DI 
     public DeptController(MyDbContext myDbContext)
     {
         _myDbContext = myDbContext;
     }
 
-    [HttpGet]
+    // GET: Dept
+    [HttpGet(Name = "GetAllDepts")]
     public IEnumerable<DeptVO> Get()
     {
-        return _myDbContext.DeptVOs.ToList();
+        return _myDbContext.DeptVOs
+            // .Include(vo => vo.EmpVOs)
+            .ToList();
+    }
+    
+    // GET: https://localhost:7076/api/dept/30
+    [HttpGet("{deptId}", Name = "GetDeptById")]
+    public DeptVO Get(int deptId)
+    {
+        Console.Out.WriteLine("deptId = " + deptId);
+        return _myDbContext.DeptVOs
+            .Include(vo => vo.EmpVOs)
+            .Single(vo => vo.Deptno.Equals(deptId));
     }
     
 }
