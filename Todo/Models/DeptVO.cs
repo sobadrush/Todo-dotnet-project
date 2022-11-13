@@ -28,5 +28,5 @@ public partial class DeptVO
     public string? Loc { get; set; }
 
     [JsonIgnore]
-    public virtual ICollection<EmpVO> EmpVOs { get; } = new List<EmpVO>();
+    public virtual ICollection<EmpVO> EmpVOs { get; set; } = new List<EmpVO>();
 }
