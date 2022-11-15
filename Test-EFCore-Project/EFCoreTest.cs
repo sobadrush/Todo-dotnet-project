@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.Reflection;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.Configuration;
@@ -83,7 +80,7 @@ public class EFCoreTest
     {
         SetUp();
         _testOutputHelper.WriteLine("========== 我是 EFCoreTest - Test1_FindAllDepts ==========");
-        var deptVos = _myDbContext?.DeptVOs.ToList();
+        var deptVos = _myDbContext?.DeptVOs.OrderByDescending(vo => vo.Deptno).ToList();
         foreach (var dVO in deptVos)
         {
             _testOutputHelper.WriteLine(dVO.ToJson());
@@ -181,9 +178,9 @@ public class EFCoreTest
 
         var wantToDeleteVo = new DeptVO();
         wantToDeleteVo.Deptno = 20;
-
+        
         var deptVo = _myDbContext?.DeptVOs.Include(vo => vo.EmpVOs) // Eager Loading
-            .FirstOrDefault(vo => vo.Deptno.Equals(wantToDeleteVo.Deptno));
+            .First(vo => vo.Deptno.Equals(wantToDeleteVo.Deptno));
         _testOutputHelper.WriteLine(deptVo.ToJson());
         foreach (var emp in deptVo.EmpVOs)
         {
@@ -192,7 +189,7 @@ public class EFCoreTest
 
         // Roger-Fix
         _myDbContext?.Remove(deptVo);
-
+        
         _myDbContext?.SaveChanges();
     }
 }
