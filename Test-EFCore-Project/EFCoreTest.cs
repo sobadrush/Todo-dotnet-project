@@ -1,4 +1,8 @@
+using System.ComponentModel;
+using System.Reflection;
+using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.Configuration;
 using NuGet.Protocol;
 using Todo.Context;
@@ -32,6 +36,46 @@ public class EFCoreTest
         var dbContextBuilder =
             new DbContextOptionsBuilder<MyDbContext>().UseSqlServer(config.GetConnectionString("MyDatabaseConnString"));
         _myDbContext = new MyDbContext(dbContextBuilder.Options);
+    }
+
+    [Fact]
+    public void testLinqJoin()
+    {
+        SetUp();
+        // var targetEmp = 
+        //     from emp in _myDbContext.EmpVOs 
+        //     where EF.Functions.Like(emp.Ename, "M%") && (emp.Job == "CLERK")
+        //     // where emp.Ename.StartsWith("M") && emp.Job == "CLERK"
+        //     select emp;
+
+        // var targetEmp = _myDbContext.EmpVOs.Where(vo =>
+        //     vo.Ename.StartsWith("M") &&
+        //     vo.Job == "CLERK"
+        // );
+
+        // JOIN + ORDERBY + WHERE
+        // var targetEmp = from emp in _myDbContext.EmpVOs
+        //     join dept in _myDbContext.DeptVOs on emp.Deptno equals dept.Deptno
+        //     where emp.Ename.StartsWith("M")
+        //     orderby emp.Empno ascending 
+        //     select new { emp, dept.Dname };
+
+        // JOIN + ORDERBY + WHERE (ref. https://dotblogs.com.tw/erictsaiblog/2015/05/17/151321)
+        var targetEmp = _myDbContext.EmpVOs.Join(
+            _myDbContext.DeptVOs, // 第一個參數為 要加入的資料來源
+            empVO => empVO.Deptno, // 主表要join的值
+            deptVO => deptVO.Deptno, // 次表要join的值
+            (ee, dd) => new // (c,s)代表將資料集合起來
+            {
+                empNoGG = ee.Empno,
+                empNameGG = ee.Ename,
+                deptNameGG = dd.Dname
+            }
+        ).Where(result => result.empNameGG.StartsWith("M"))
+            .OrderByDescending(result => result.empNoGG);
+        
+        // 印出結果
+        targetEmp.ToList().ForEach(obj => _testOutputHelper.WriteLine(obj.ToString()));
     }
 
     [Fact]
@@ -145,10 +189,10 @@ public class EFCoreTest
         {
             _testOutputHelper.WriteLine(" >>> " + emp.ToJson());
         }
-        
+
         // Roger-Fix
         _myDbContext?.Remove(deptVo);
-        
+
         _myDbContext?.SaveChanges();
     }
 }
